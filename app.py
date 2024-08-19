@@ -7,7 +7,7 @@ DB_DIR = '/app/db'
 DB_PATH = os.path.join(DB_DIR, 'dodge_tracker.db')
 
 # Define a password for edit and delete actions
-VALID_PASSWORD = 'test'  # Replace with your desired password
+VALID_PASSWORD = 'CHANGEPASSWORD'  # Replace with your desired password
 
 def init_db():
     """Initialize the database with required tables."""
