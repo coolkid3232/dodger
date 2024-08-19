@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodge Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        position: relative;
+        display: flex;
+        justify-content: space-between; /* Space between title and dropdown */
+        align-items: center;
+        flex-wrap: wrap; /* Allow wrapping if needed */
+    }
+
+    header h1 {
+        margin: 0;
+        text-align: center; /* Center the title */
+        flex: 1; /* Allow the title to take up available space */
+    }
+
+    .dropdown {
+        margin-left: auto; /* Push the dropdown to the right */
+    }
+
+    .dropdown .dropbtn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff; /* Same background color as other buttons */
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .dropdown .dropbtn:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        right: 0;
+        min-width: 250px;
+    }
+
+    .dropdown-content form {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dropdown-content form input,
+    .dropdown-content form select {
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .dropdown-content form button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .dropdown-content form button.delete {
+        background-color: #dc3545;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .container {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .add-dodge-form {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .add-dodge-form input,
+    .add-dodge-form select {
+        padding: 10px;
+        margin-right: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        flex: 1;
+    }
+
+    .add-dodge-form button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .date-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Add space between date input and buttons */
+    }
+
+    .date-container button {
+        padding: 10px 20px; /* Match the padding of other buttons */
+        border: none;
+        border-radius: 4px;
+        background-color: #2ab817; /* Match the background color */
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 120px; /* Adjust the width */
+    }
+
+    .date-container .today-button {
+        background-color: #28a745; /* Different color for today button */
+    }
+
+    .friend-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .friend-item {
+        display: grid;
+        grid-template-columns: 2fr 3fr 2fr;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        gap: 10px;
+    }
+
+    .friend-item:last-child {
+        border-bottom: none;
+    }
+
+    .friend-item div {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center items horizontally */
+    }
+
+    .friend-item .name {
+        text-align: center;
+    }
+
+    .friend-item .reason {
+        text-align: center;
+    }
+
+    .friend-item .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .friend-item a.button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        text-decoration: none; /* Remove underline */
+    }
+
+    .friend-item a.button.view {
+        background-color: #2ab817;
+        color: white;
+    }
+
+    .friend-item form button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #dc3545;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+    <header>
+        <h1>Dodge Tracker</h1>
+        <div class="dropdown">
+            <button class="dropbtn">Menu</button>
+            <div class="dropdown-content">
+                <!-- Add Friend Form -->
+                <form action="/add_friend" method="POST">
+                    <input type="text" name="name" placeholder="Add Friend" required>
+                    <button type="submit">Add Friend</button>
+                </form>
+                
+                <!-- Delete Friend Form -->
+                <form action="/delete_friend" method="POST">
+                    <select name="name" required>
+                        <option value="">Select Friend</option>
+                        {% for friend in friends %}
+                        <option value="{{ friend[0] }}">{{ friend[0] }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="password" name="password" placeholder="Enter Password" required>
+                    <button type="submit" class="delete">Delete Friend</button>
+                </form>
+                
+                <!-- Edit Friend Form -->
+                <form action="/edit_friend" method="POST">
+                    <select name="old_name" required>
+                        <option value="">Select Current Name</option>
+                        {% for friend in friends %}
+                        <option value="{{ friend[0] }}">{{ friend[0] }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="new_name" placeholder="New Name" required>
+                    <input type="password" name="password" placeholder="Enter Password" required>
+                    <button type="submit">Edit Friend</button>
+                </form>
+            </div>
+        </div>
+        
+    </header>
+    <div class="container">
+        <form class="add-dodge-form" action="/add_dodge" method="POST">
+            <select name="name" required>
+                <option value="">Select a friend</option>
+                {% for friend in friends %}
+                <option value="{{ friend[0] }}">{{ friend[0] }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="reason" placeholder="Reason" required>
+            <div class="date-container">
+                <input type="date" name="date" id="date" required>
+                <button type="button" onclick="setToday()">Today</button>
+            </div>
+            <button type="submit">Add Dodge</button>
+        </form>
+        <ul class="friend-list">
+            <li class="friend-item">
+                <div class="name"><strong>Name</strong></div>
+                <div class="reason"><strong>Most Recent Reason</strong></div>
+                <div class="actions"><strong>Actions</strong></div>
+            </li>
+            {% for friend in friends %}
+            <li class="friend-item">
+                <div class="name">{{ friend[0] }} - {{ friend[1] }} dodges</div>
+                <div class="reason">{{ friend[2] if friend[2] else 'No dodges' }}</div>
+                <div class="actions">
+                    <a href="{{ url_for('friend', name=friend[0]) }}" class="button view">View Dodges</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+	function setToday() {
+    const now = new Date();
+    // Get the UTC time and adjust for Eastern Time (subtract 5 hours for standard time, 4 hours for daylight saving time)
+    const offset = now.getTimezoneOffset() * 60000; // Timezone offset in milliseconds
+    const easternTime = new Date(now.getTime() - offset + (new Date().getTimezoneOffset() === 240 ? -14400000 : -18000000)); // 4 or 5 hour difference depending on daylight saving
+    const today = easternTime.toISOString().split('T')[0];
+    document.getElementById('date').value = today;
+}
+
+    </script>
+</body>
+</html>
